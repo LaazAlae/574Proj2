@@ -7,7 +7,7 @@ import scipy.io
 import matplotlib.pyplot as plt
 import pickle
 import sys
-
+import pdb
 # Problem 1
 ########################################################################################################################################################
 def ldaLearn(X,y):
@@ -23,6 +23,10 @@ def ldaLearn(X,y):
 
     #identify unique classes in y w goal of giving all distinct class labels
     classes = np.unique(y)
+    # breakpoint()
+    # print(X)
+    # print(y)
+    # print(classes)
     # d nbr of features k nbr of classes
     d = X.shape[1]
     k = len(classes)
@@ -231,9 +235,14 @@ def learnRidgeRegression(X,y,lambd):
     # y = N x 1 
     # lambd = ridge parameter (scalar)
     # Output:                                                                  
-    # w = d x 1                                                                
+    # w = d x 1      
+    # IMPLEMENT THIS METHOD
+    # After taking the derivative we get w = (XᵀX + λI)^(-1)Xᵀy
 
-    # IMPLEMENT THIS METHOD                                                   
+    d = X.shape[1] # Number of features/columns
+    I = np.eye(d) # Identity matrix of size d x d
+    w = np.linalg.inv(X.T @ X + lambd*I) @ (X.T @ y)
+                                                    
     return w
 
 
@@ -242,8 +251,18 @@ def regressionObjVal(w, X, y, lambd):
     # compute squared error (scalar) and gradient of squared error with respect
     # to w (vector) for the given data X and y and the regularization parameter
     # lambda                                                                  
+    # The gradient for this problem is: −Xᵀ(y−Xw)+λw
+    # IMPLEMENT THIS METHOD
 
-    # IMPLEMENT THIS METHOD                                             
+    w = w.reshape(-1, 1)  # Ensure w is column vector
+    error = 0.5 * ((y - X @ w).T @ (y - X @ w) + lambd * (w.T @ w))
+
+    # Convert scalar to float
+    error = float(error)
+    error_grad = -X.T @ (y - X @ w) + lambd * w
+    # Flatten gradient for scipy.minimize compatibility
+    error_grad = error_grad.flatten()
+
     return error, error_grad
 
 def mapNonLinear(x,p):
@@ -344,7 +363,7 @@ i = 0
 mses4_train = np.zeros((k,1))
 mses4 = np.zeros((k,1))
 opts = {'maxiter' : 20}    # Preferred value.                                                
-w_init = np.ones((X_i.shape[1],1))
+w_init = np.ones(X_i.shape[1])
 for lambd in lambdas:
     args = (X_i, y, lambd)
     w_l = minimize(regressionObjVal, w_init, jac=True, args=args,method='CG', options=opts)
@@ -367,10 +386,12 @@ plt.title('MSE for Test Data')
 plt.legend(['Using scipy.minimize','Direct minimization'])
 plt.show()
 
+breakpoint()
 
 # Problem 5
 pmax = 7
-lambda_opt = 0 # REPLACE THIS WITH lambda_opt estimated from Problem 3
+lambda_opt = lambdas[np.argmin(mses3)] # REPLACE THIS WITH lambda_opt estimated from Problem 3
+print(f"Optimal lambda value: {lambda_opt}")
 mses5_train = np.zeros((pmax,2))
 mses5 = np.zeros((pmax,2))
 for p in range(pmax):
