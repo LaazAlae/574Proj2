@@ -273,6 +273,11 @@ def mapNonLinear(x,p):
     # Xp - (N x (p+1)) 
 	
     # IMPLEMENT THIS METHOD
+    x = x.flatten()  
+    N = x.shape[0]
+    Xp = np.zeros((N, p+1))
+    for i in range(p+1):
+        Xp[:, i] = x**i
     return Xp
 
 # Main script
@@ -386,11 +391,10 @@ plt.title('MSE for Test Data')
 plt.legend(['Using scipy.minimize','Direct minimization'])
 plt.show()
 
-breakpoint()
 
 # Problem 5
 pmax = 7
-lambda_opt = lambdas[np.argmin(mses3)] # REPLACE THIS WITH lambda_opt estimated from Problem 3
+lambda_opt = lambdas[np.argmin(mses3)] 
 print(f"Optimal lambda value: {lambda_opt}")
 mses5_train = np.zeros((pmax,2))
 mses5 = np.zeros((pmax,2))
