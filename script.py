@@ -394,7 +394,7 @@ plt.show()
 
 # Problem 5
 pmax = 7
-lambda_opt = lambdas[np.argmin(mses3)] 
+lambda_opt = 0.06 # Optimized value found in problem 3 and 4
 print(f"Optimal lambda value: {lambda_opt}")
 mses5_train = np.zeros((pmax,2))
 mses5 = np.zeros((pmax,2))
